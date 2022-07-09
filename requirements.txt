@@ -10,3 +10,4 @@ peewee==3.15.0
 requests==2.28.1
 urllib3==1.26.10
 Werkzeug==2.1.2
+xmltodict==0.13.0
