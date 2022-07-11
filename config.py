@@ -2,6 +2,7 @@ import logging
 
 
 DB_PATH = "data/golden-eye.db"
+LOGS_DB_PATH = "data/golden-eye-logs.db"
 
 LOGGER_CONFIG = dict(level=logging.DEBUG,
                      file="app.log",
