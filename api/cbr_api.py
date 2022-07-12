@@ -14,7 +14,7 @@ class Api(_Api):
         return rate
 
     def _get_cbr_rate(self, from_currency):
-        response = requests.get("http://www.cbr.ru/scripts/XML_daily.asp")
+        response = self._send_request(url="http://www.cbr.ru/scripts/XML_daily.asp", method="get")
         self.log.debug("response.encoding: %s" % response.encoding)
         response_text = response.text
         self.log.debug("response.text: %s" % response_text)
