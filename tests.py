@@ -80,7 +80,7 @@ class Test(unittest.TestCase):
         updated_before = xrate.updated
         self.assertEqual(xrate.rate, 1.0)
 
-        privat_api.Api().update_rate(840, 643)
+        cbr_api.Api().update_rate(840, 643)
 
         xrate = models.XRate.get(from_currency=840, to_currency=643)
         updated_after = xrate.updated
