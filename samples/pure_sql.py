@@ -2,7 +2,7 @@ import sqlite3
 
 def select():
 
-    conn = sqlite3.connect('data/golden-eye.db')
+    conn = sqlite3.connect('../data/golden-eye.db')
     cur = conn.cursor()
     cur.execute("SELECT * FROM xrates")
     rows = cur.fetchall()
