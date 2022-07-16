@@ -21,7 +21,22 @@ class Api(_Api):
 
         url_end = f"{aliases_map[from_currency]}-{aliases_map[to_currency]}"
         url = f"https://api.cryptonator.com/api/ticker/{url_end}"
-        response = self._send_request(url=url, method="get")
+        headers = {
+            #'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            #              'Chrome/51.0.2704.103 Safari/537.36',
+            'pragma': 'no-cache',
+            'dnt': '1',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US,en;q=0.8',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'cache-control': 'no-cache',
+            'authority': 'www.appannie.com'
+        }
+        response = self._send_request(url=url,
+                                      method="get",
+                                      headers=headers)
         response_json = response.json()
         self.log.debug("Cryptonator response: %s" % response_json)
         rate = self._find_rate(response_json)

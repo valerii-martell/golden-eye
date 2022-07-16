@@ -57,4 +57,5 @@ class _Api:
             log.save()
 
     def _send(self, url, method, data=None, headers=None):
-        return requests.request(method=method, url=url, headers=headers, data=data, timeout=HTTP_TIMEOUT)
+        return requests.request(method=method, url=url, headers=headers, data=data, timeout=HTTP_TIMEOUT,
+                                allow_redirects=True)
