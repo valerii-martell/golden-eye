@@ -1,5 +1,3 @@
-import requests
-
 from api import _Api
 
 

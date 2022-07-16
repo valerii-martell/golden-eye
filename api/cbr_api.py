@@ -1,7 +1,5 @@
 import xml.etree.ElementTree as ET
 
-import requests
-
 from api import _Api
 
 
@@ -26,9 +24,12 @@ class Api(_Api):
         root = ET.fromstring(response_text)
         valutes = root.findall("Valute")
 
-        cbr_valute_map = {840: "USD", 980: "UAH"}
-        currency_cbr_alias = cbr_valute_map[from_currency]
+        cbr_valute_map = {840: "USD"}
 
+        if from_currency not in cbr_valute_map:
+            raise ValueError(f"Invalid from_currency: {from_currency}")
+
+        currency_cbr_alias = cbr_valute_map[from_currency]
         for valute in valutes:
             if valute.find('CharCode').text == currency_cbr_alias:
                 return float(valute.find("Value").text.replace(",", "."))
