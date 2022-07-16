@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rates</title>
+</head>
+<body>
+    {% if not xrates %}
+    <h1>No rates!</h1>
+    {% endif %}
+
+    <table border="1">
+        <thead align="center">
+            <td>From</td><td>To</td><td>Rate</td>
+        </thead>
+        {% for rate in xrates %}
+        <tr align="center">
+            <td>{{rate.from_currency}}</td>
+            <td>{{rate.to_currency}}</td>
+            <td>{{rate.rate}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
