@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from flask import render_template, make_response, jsonify, request, redirect, url_for
 import xmltodict
 
 from models import XRate, ApiLog, ErrorLog
 import api
 
+aliases_map = {1000: "BTC", 643: "RUB", 980: "UAH", 840: "USD"}
 
 class BaseController:
     def __init__(self):
@@ -22,7 +25,7 @@ class BaseController:
 class ViewAllRates(BaseController):
     def _call(self):
         xrates = XRate.select()
-        return render_template("xrates.html", xrates=xrates)
+        return render_template("xrates.html", xrates=xrates, aliases_map=aliases_map)
 
 
 class GetApiRates(BaseController):
@@ -49,11 +52,17 @@ class GetApiRates(BaseController):
 
     def _get_xml(self, xrates):
         d = {"xrates": {"xrate": [
-            {"from": rate.from_currency, "to": rate.to_currency, "rate": rate.rate} for rate in xrates]}}
+            {"alias": f'{aliases_map[rate.from_currency]}-{aliases_map[rate.to_currency]}',
+             "from": rate.from_currency,
+             "to": rate.to_currency,
+             "rate": rate.rate} for rate in xrates]}}
         return make_response(xmltodict.unparse(d), {'Content-Type': 'text/xml'})
 
     def _get_json(self, xrates):
-        return jsonify([{"from": rate.from_currency, "to": rate.to_currency, "rate": rate.rate} for rate in xrates])
+        return jsonify([{"alias": f'{aliases_map[rate.from_currency]}-{aliases_map[rate.to_currency]}',
+                         "from": rate.from_currency,
+                         "to": rate.to_currency,
+                         "rate": rate.rate} for rate in xrates])
 
 
 class UpdateRates(BaseController):
@@ -99,4 +108,28 @@ class ViewLogs(BaseController):
             return render_template("logs.html", logs=logs)
         else:
             raise ValueError(f"Unknown format: {fmt}")
+
+
+class EditRate(BaseController):
+    def _call(self, from_currency, to_currency):
+        if self.request.method == "GET":
+            return render_template("rate_edit.html",
+                                   from_currency=from_currency,
+                                   to_currency=to_currency,
+                                   aliases_map=aliases_map)
+
+        # POST request is got
+        print(request.form)
+        if "new_rate" not in request.form:
+            raise Exception("new_rate parameter is required")
+
+        if not request.form["new_rate"]:
+            raise Exception("new_rate must be not empty")
+
+        upd_count = (XRate.update({XRate.rate: float(request.form["new_rate"]), XRate.updated: datetime.now()})
+                          .where(XRate.from_currency == from_currency,
+                                 XRate.to_currency == to_currency).execute())
+
+        print("upd_count", upd_count)
+        return redirect(url_for('view_rates'))
 
