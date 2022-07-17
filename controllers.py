@@ -1,7 +1,8 @@
-from flask import render_template, make_response, jsonify, request
+from flask import render_template, make_response, jsonify, request, redirect, url_for
 import xmltodict
 
 from models import XRate
+import api
 
 
 class BaseController:
@@ -53,3 +54,27 @@ class GetApiRates(BaseController):
 
     def _get_json(self, xrates):
         return jsonify([{"from": rate.from_currency, "to": rate.to_currency, "rate": rate.rate} for rate in xrates])
+
+
+class UpdateRates(BaseController):
+    def _call(self, from_currency, to_currency):
+        if not from_currency and not to_currency:
+            self._update_all()
+
+        elif from_currency and to_currency:
+            self._update_rate(from_currency, to_currency)
+
+        else:
+            ValueError("from_currency and to_currency")
+        return redirect(url_for("view_rates"))
+
+    def _update_rate(self, from_currency, to_currency):
+        api.update_rate(from_currency, to_currency)
+
+    def _update_all(self):
+        xrates = XRate.select()
+        for rate in xrates:
+            try:
+                self._update_rate(rate.from_currency, rate.to_currency)
+            except Exception as ex:
+                print(ex)
