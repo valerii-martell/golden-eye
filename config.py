@@ -10,3 +10,5 @@ LOGGER_CONFIG = dict(level=logging.DEBUG,
                      )
 
 HTTP_TIMEOUT = 15
+
+IP_LIST = ["127.0.0.1", "127.0.0.10"]
