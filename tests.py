@@ -268,6 +268,16 @@ class Test(unittest.TestCase):
         r = r.json()
         self.assertEqual(type(r), list)
 
+    def test_xrate_edit(self):
+        from_currency, to_currency = 840, 980
+        old_rate = models.XRate.get(from_currency=from_currency, to_currency=to_currency).rate
+        data = {'new_rate':999.0}
+        r = requests.post(f'http://127.0.0.1:5000/edit/{from_currency}/{to_currency}', data=data)
+        self.assertTrue(r.ok)
+        print(models.XRate.get(from_currency=from_currency, to_currency=to_currency).rate)
+        self.assertEqual(models.XRate.get(from_currency=from_currency, to_currency=to_currency).rate, 999.0)
+        models.XRate.get(from_currency=from_currency, to_currency=to_currency).rate = old_rate
+
 
 if __name__ == '__main__':
     unittest.main()
