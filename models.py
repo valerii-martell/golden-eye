@@ -47,6 +47,10 @@ class ApiLog(_LogModel):
     finished = DateTimeField()
     error = TextField(null=True)
 
+    def json(self):
+        data = self.__data__
+        return data
+
 
 class ErrorLog(_LogModel):
     class Meta:

@@ -1,7 +1,7 @@
 from flask import render_template, make_response, jsonify, request, redirect, url_for
 import xmltodict
 
-from models import XRate
+from models import XRate, ApiLog
 import api
 
 
@@ -78,3 +78,10 @@ class UpdateRates(BaseController):
                 self._update_rate(rate.from_currency, rate.to_currency)
             except Exception as ex:
                 print(ex)
+
+
+class ViewLogs(BaseController):
+    def _call(self):
+        page = int(self.request.args.get("page", 1))
+        logs = ApiLog.select().paginate(page, 10).order_by(ApiLog.id.desc())
+        return render_template("logs.html", logs=logs)

@@ -22,3 +22,8 @@ def api_rates(fmt):
 @app.route("/update/all")
 def update_xrates(from_currency=None, to_currency=None):
     return controllers.UpdateRates().call(from_currency, to_currency)
+
+
+@app.route("/logs")
+def view_logs():
+    return controllers.ViewLogs().call()
