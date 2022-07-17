@@ -3,10 +3,12 @@ from datetime import datetime
 from flask import render_template, make_response, jsonify, request, redirect, url_for
 import xmltodict
 
+from app import app
 from models import XRate, ApiLog, ErrorLog
 import api
 
 aliases_map = {1000: "BTC", 643: "RUB", 980: "UAH", 840: "USD"}
+
 
 class BaseController:
     def __init__(self):
@@ -14,8 +16,10 @@ class BaseController:
 
     def call(self, *args, **kwds):
         try:
+            app.logger.info(f"Started {self.__class__.__name__}")
             return self._call(*args, **kwds)
         except Exception as ex:
+            app.logger.exception("Error: %s" % ex)
             return make_response(str(ex), 500)
 
     def _call(self, *args, **kwds):
@@ -30,6 +34,7 @@ class ViewAllRates(BaseController):
 
 class GetApiRates(BaseController):
     def _call(self, fmt):
+        app.logger.info(f"Asked for API in format {fmt}")
         xrates = XRate.select()
         xrates = self._filter(xrates)
 
@@ -74,7 +79,8 @@ class UpdateRates(BaseController):
             self._update_rate(from_currency, to_currency)
 
         else:
-            ValueError("from_currency and to_currency")
+            app.logger.exception("Error: %s" % "from_currency and to_currency")
+            raise ValueError("from_currency and to_currency")
         return redirect(url_for("view_rates"))
 
     def _update_rate(self, from_currency, to_currency):
@@ -86,15 +92,18 @@ class UpdateRates(BaseController):
             try:
                 self._update_rate(rate.from_currency, rate.to_currency)
             except Exception as ex:
+                app.logger.exception("Error: %s" % ex)
                 print(ex)
 
 
 class ViewLogs(BaseController):
     def _call(self, logs_type, fmt):
+        app.logger.debug("log_type: %s" % logs_type)
         page = int(self.request.args.get("page", 1))
 
         models = {'api': ApiLog, 'errors': ErrorLog}
         if logs_type not in models:
+            app.logger.exception("Error: %s" % f"Unknown logs type: {logs_type}")
             raise ValueError(f"Unknown logs type: {logs_type}")
 
         logs = models[logs_type].select().paginate(page, 10).order_by(models[logs_type].id.desc())
@@ -104,6 +113,7 @@ class ViewLogs(BaseController):
         elif fmt == 'html':
             return render_template("logs.html", logs=logs)
         else:
+            app.logger.exception("Error: %s" % f"Unknown format: {fmt}")
             raise ValueError(f"Unknown format: {fmt}")
 
 
@@ -118,9 +128,11 @@ class EditRate(BaseController):
         # POST request is got
         print(request.form)
         if "new_rate" not in request.form:
+            app.logger.exception("Error: %s" % "new_rate parameter is required")
             raise Exception("new_rate parameter is required")
 
         if not request.form["new_rate"]:
+            app.logger.exception("Error: %s" % "new_rate must be not empty")
             raise Exception("new_rate must be not empty")
 
         upd_count = (XRate.update({XRate.rate: float(request.form["new_rate"]), XRate.updated: datetime.now()})
