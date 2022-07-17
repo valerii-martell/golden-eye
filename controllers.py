@@ -1,7 +1,7 @@
 from flask import render_template, make_response, jsonify, request, redirect, url_for
 import xmltodict
 
-from models import XRate, ApiLog
+from models import XRate, ApiLog, ErrorLog
 import api
 
 
@@ -81,7 +81,22 @@ class UpdateRates(BaseController):
 
 
 class ViewLogs(BaseController):
-    def _call(self):
+    def _call(self, logs_type, fmt):
         page = int(self.request.args.get("page", 1))
-        logs = ApiLog.select().paginate(page, 10).order_by(ApiLog.id.desc())
-        return render_template("logs.html", logs=logs)
+        logs = None
+        if logs_type == 'logs':
+            logs = ApiLog
+        elif logs_type == 'errors':
+            logs = ErrorLog
+        else:
+            raise ValueError(f"Unknown logs type: {logs_type}")
+
+        logs = logs.select().paginate(page, 10).order_by(logs.id.desc())
+
+        if fmt == "json":
+            return jsonify([log.json() for log in logs])
+        elif fmt == 'html':
+            return render_template("logs.html", logs=logs)
+        else:
+            raise ValueError(f"Unknown format: {fmt}")
+

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +9,8 @@
     {% endif %}
     
     <ul>
-        {% for l in logs %}
-        <li>{{l.json()}}</li>
+        {% for log in logs %}
+        <li>{{log.json()}}</li>
         {% endfor %}
     </ul>
 </body>

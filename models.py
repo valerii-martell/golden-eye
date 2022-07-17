@@ -16,6 +16,10 @@ class _LogModel(Model):
     class Meta:
         database = db_logs
 
+    def json(self):
+        data = self.__data__
+        return data
+
 
 class XRate(_Model):
     class Meta:
@@ -46,10 +50,6 @@ class ApiLog(_LogModel):
     created = DateTimeField(index=True, default=peewee_datetime.datetime.now)
     finished = DateTimeField()
     error = TextField(null=True)
-
-    def json(self):
-        data = self.__data__
-        return data
 
 
 class ErrorLog(_LogModel):
