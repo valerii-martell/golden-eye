@@ -1,6 +1,7 @@
 import unittest
 import json
 from unittest.mock import patch
+import xml.etree.ElementTree as ET
 
 import xmltodict
 import requests
@@ -23,8 +24,8 @@ def get_privat_response(*args, **kwds):
 
 
 class Test(unittest.TestCase):
-    def setUp(self):
-        models.init_db()
+    #def setUp(self):
+    #    models.init_db()
 
     @unittest.skip("skip")
     def test_privat_usd(self):
@@ -188,7 +189,7 @@ class Test(unittest.TestCase):
 
         self.assertIn('"RUB": {', api_log.response_text)
 
-    #@unittest.skip("skip")
+    @unittest.skip("skip")
     def test_coinmarketcap_uah(self):
         from_currency = 1000
         to_currency = 980
@@ -237,6 +238,35 @@ class Test(unittest.TestCase):
         json_rates = r.json()
         self.assertIsInstance(json_rates, list)
         self.assertEqual(len(json_rates), 2)
+
+    def test_html_xrates(self):
+        r = requests.get("http://localhost:5000/xrates")
+        self.assertTrue(r.ok)
+        self.assertIn('<table border="1">', r.text)
+        root = ET.fromstring(r.text)
+        body = root.find("body")
+        self.assertIsNotNone(body)
+        table = body.find("table")
+        self.assertIsNotNone(table)
+        rows = table.findall("tr")
+        self.assertEqual(len(rows), 5)
+
+    def test_html_logs(self):
+        r = requests.get("http://localhost:5000/logs/html")
+        self.assertTrue(r.ok)
+        root = ET.fromstring(r.text)
+        body = root.find("body")
+        self.assertIsNotNone(body)
+        ul = body.find("ul")
+        self.assertIsNotNone(ul)
+        lis = ul.findall("li")
+        self.assertGreaterEqual(len(lis), 1)
+
+    def test_json_errors(self):
+        r = requests.get("http://localhost:5000/errors/json")
+        self.assertTrue(r.ok)
+        r = r.json()
+        self.assertEqual(type(r), list)
 
 
 if __name__ == '__main__':
