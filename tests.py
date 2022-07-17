@@ -164,7 +164,7 @@ class Test(unittest.TestCase):
 
         self.assertIn('{"base":"BTC","target":"UAH","price":', api_log.response_text)
 
-    #@unittest.skip("skip")
+    @unittest.skip("skip")
     def test_blockchaininfo_rub(self):
         from_currency = 1000
         to_currency = 643
@@ -187,6 +187,31 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(api_log.response_text)
 
         self.assertIn('"RUB": {', api_log.response_text)
+
+    #@unittest.skip("skip")
+    def test_coinmarketcap_uah(self):
+        from_currency = 1000
+        to_currency = 980
+        xrate = models.XRate.get(from_currency=from_currency, to_currency=to_currency)
+        updated_before = xrate.updated
+        self.assertEqual(xrate.rate, 1.0)
+
+        api.update_rate(from_currency, to_currency)
+
+        xrate = models.XRate.get(from_currency=from_currency, to_currency=to_currency)
+        updated_after = xrate.updated
+
+        self.assertGreater(xrate.rate, 100000)
+        self.assertGreater(updated_after, updated_before)
+
+        api_log = models.ApiLog.select().order_by(models.ApiLog.created.desc()).first()
+
+        self.assertIsNotNone(api_log)
+        self.assertIn('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=',
+                      api_log.request_url)
+        self.assertIsNotNone(api_log.response_text)
+
+        self.assertIn('"quote":{"UAH":{"price":', api_log.response_text)
 
     def test_xml_api(self):
         r = requests.get("http://localhost:5000/api/xrates/xml")
