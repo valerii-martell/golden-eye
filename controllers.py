@@ -92,15 +92,12 @@ class UpdateRates(BaseController):
 class ViewLogs(BaseController):
     def _call(self, logs_type, fmt):
         page = int(self.request.args.get("page", 1))
-        logs = None
-        if logs_type == 'logs':
-            logs = ApiLog
-        elif logs_type == 'errors':
-            logs = ErrorLog
-        else:
+
+        models = {'api': ApiLog, 'errors': ErrorLog}
+        if logs_type not in models:
             raise ValueError(f"Unknown logs type: {logs_type}")
 
-        logs = logs.select().paginate(page, 10).order_by(logs.id.desc())
+        logs = models[logs_type].select().paginate(page, 10).order_by(models[logs_type].id.desc())
 
         if fmt == "json":
             return jsonify([log.json() for log in logs])

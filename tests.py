@@ -252,7 +252,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(rows), 5)
 
     def test_html_logs(self):
-        r = requests.get("http://localhost:5000/logs/html")
+        r = requests.get("http://localhost:5000/logs/api/html")
         self.assertTrue(r.ok)
         root = ET.fromstring(r.text)
         body = root.find("body")
@@ -263,7 +263,7 @@ class Test(unittest.TestCase):
         self.assertGreaterEqual(len(lis), 1)
 
     def test_json_errors(self):
-        r = requests.get("http://localhost:5000/errors/json")
+        r = requests.get("http://localhost:5000/logs/errors/json")
         self.assertTrue(r.ok)
         r = r.json()
         self.assertEqual(type(r), list)
