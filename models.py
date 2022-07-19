@@ -1,10 +1,35 @@
+import os
+import urllib
+
 from peewee import (SqliteDatabase, Model, IntegerField, DoubleField, DateTimeField, datetime as peewee_datetime,
-                    CharField, TextField)
+                    CharField, TextField, PostgresqlDatabase)
 
-from config import DB_PATH, LOGS_DB_PATH
+import config
+from config import DB_CONN
 
-db = SqliteDatabase(DB_PATH)
-db_logs = SqliteDatabase(LOGS_DB_PATH)
+db_logs = SqliteDatabase(config.LOGS_DB_PATH)
+
+if DB_CONN['host'] and DB_CONN['user'] and DB_CONN['password'] \
+    and DB_CONN['port'] and DB_CONN['database'] and DB_CONN['sslmode']:
+    db = PostgresqlDatabase(host=DB_CONN['host'],
+                            user=DB_CONN['user'],
+                            password=DB_CONN['password'],
+                            port=DB_CONN['port'],
+                            database=DB_CONN['database'],
+                            sslmode=DB_CONN['sslmode'])
+else:
+    db = SqliteDatabase(config.DB_PATH)
+
+# if os.environ.get("DATABASE_URL"):
+#     url = urllib.parse.urlparse(os.environ.get("DATABASE_URL"))
+#     db = PostgresqlDatabase(host=url.hostname,
+#                             user=url.username,
+#                             password=url.password,
+#                             port=url.port,
+#                             database=url.path[1:])
+#     # db = MySQLDatabase()
+# else:
+#     db = SqliteDatabase(config.DB_PATH)
 
 
 class _Model(Model):
@@ -64,17 +89,22 @@ class ErrorLog(_LogModel):
     created = DateTimeField(default=peewee_datetime.datetime.now, index=True)
 
 
+def start_db():
+    if not XRate.table_exists():
+        XRate.create_table()
+        XRate.create(from_currency=840, to_currency=980, rate=1, module="privat_api")
+        XRate.create(from_currency=840, to_currency=643, rate=1, module="cbr_api")
+        XRate.create(from_currency=1000, to_currency=840, rate=1, module="privat_api")
+        XRate.create(from_currency=1000, to_currency=980, rate=1, module="coinmarketcap_api")
+        XRate.create(from_currency=1000, to_currency=643, rate=1, module="blockchaininfo_api")
+
+        for m in ApiLog, ErrorLog:
+            m.drop_table()
+            m.create_table()
+
+        print("db created!")
+
+
 def init_db():
     XRate.drop_table()
-    XRate.create_table()
-    XRate.create(from_currency=840, to_currency=980, rate=1, module="privat_api")
-    XRate.create(from_currency=840, to_currency=643, rate=1, module="cbr_api")
-    XRate.create(from_currency=1000, to_currency=840, rate=1, module="privat_api")
-    XRate.create(from_currency=1000, to_currency=980, rate=1, module="coinmarketcap_api")
-    XRate.create(from_currency=1000, to_currency=643, rate=1, module="blockchaininfo_api")
-
-    for m in (ApiLog, ErrorLog):
-        m.drop_table()
-        m.create_table()
-
-    print("db created!")
+    start_db()

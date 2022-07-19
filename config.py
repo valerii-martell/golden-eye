@@ -1,5 +1,15 @@
 import logging
+import os
 
+
+DB_CONN = {
+    'database': os.environ.get('POSTGRESQL_DATABASE'),
+    'host': os.environ.get('POSTGRESQL_HOST'),
+    'user': os.environ.get('POSTGRESQL_USER'),
+    'password': os.environ.get('POSTGRESQL_PASSWORD'),
+    'port': os.environ.get('POSTGRESQL_PORT'),
+    'sslmode': os.environ.get('POSTGRESQL_SSLMODE'),
+}
 
 DB_PATH = "data/golden-eye.db"
 LOGS_DB_PATH = "data/golden-eye-logs.db"

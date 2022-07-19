@@ -3,11 +3,9 @@ import importlib
 
 import requests
 
-from config import logging, LOGGING, HTTP_TIMEOUT
+from config import logging, HTTP_TIMEOUT
 
 from models import XRate, peewee_datetime, ApiLog, ErrorLog
-
-logging.config.dictConfig(LOGGING)
 
 
 def update_rate(from_currency, to_currency):
