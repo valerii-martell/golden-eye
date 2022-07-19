@@ -135,7 +135,7 @@ class EditRate(BaseController):
             app.logger.exception("Error: %s" % "new_rate must be not empty")
             raise Exception("new_rate must be not empty")
 
-        upd_count = (XRate.update({XRate.rate: float(request.form["new_rate"]), XRate.updated: datetime.now()})
+        (XRate.update({XRate.rate: float(request.form["new_rate"]), XRate.updated: datetime.now()})
                           .where(XRate.from_currency == from_currency,
                                  XRate.to_currency == to_currency).execute())
 

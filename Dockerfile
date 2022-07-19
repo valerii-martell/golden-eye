@@ -8,6 +8,8 @@ COPY ./ .
 RUN pip install -r requirements.txt
 RUN chown -R goldeneye:goldeneye ./
 USER goldeneye
+RUN chmod a+x run.sh
 
 EXPOSE 5000
-CMD gunicorn -w 4 --bind 0.0.0.0:$PORT app:app
+# CMD gunicorn -w 4 --bind 0.0.0.0:$PORT app:app --preload
+CMD ["./run.sh"]

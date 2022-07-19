@@ -10,9 +10,13 @@ from config import LOGGING
 dictConfig(LOGGING)
 app = Flask(__name__)
 
+import views
+
 models.start_db()
 
 app.logger = logging.getLogger('GoldenEye')
 app.logger.removeHandler(default_handler)
 
-import views
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')

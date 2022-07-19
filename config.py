@@ -1,6 +1,9 @@
 import logging
 import os
 
+KEYS = {
+    'coinmarketcap_api': os.environ.get('COINMARKETCAP_API_KEY')
+}
 
 DB_CONN = {
     'database': os.environ.get('POSTGRESQL_DATABASE'),
@@ -13,6 +16,8 @@ DB_CONN = {
 
 DB_PATH = "data/golden-eye.db"
 LOGS_DB_PATH = "data/golden-eye-logs.db"
+
+JOBS_STORE = "data/jobs.db"
 
 HTTP_TIMEOUT = 15
 

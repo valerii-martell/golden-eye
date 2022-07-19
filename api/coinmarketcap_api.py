@@ -1,4 +1,5 @@
 from api import _Api
+from config import KEYS
 
 
 class Api(_Api):
@@ -20,7 +21,7 @@ class Api(_Api):
             raise ValueError(f"Invalid to_currency: {to_currency}")
 
         url_end = f"{aliases_map[to_currency]}"
-        api_key='46884530-f181-4b03-abc4-10b11976aa96' #TODO: use env variable
+        api_key=KEYS['coinmarketcap_api']
         url = f"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?" \
               f"CMC_PRO_API_KEY={api_key}&sort=market_cap&start=1&limit=10&cryptocurrency_type=tokens" \
               f"&convert={url_end}"

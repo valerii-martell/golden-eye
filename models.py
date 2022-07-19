@@ -1,11 +1,8 @@
-import os
-import urllib
-
-from peewee import (SqliteDatabase, Model, IntegerField, DoubleField, DateTimeField, datetime as peewee_datetime,
-                    CharField, TextField, PostgresqlDatabase)
-
 import config
 from config import DB_CONN
+from peewee import SqliteDatabase, Model, IntegerField, DoubleField, DateTimeField, datetime as peewee_datetime, \
+    CharField, TextField, PostgresqlDatabase
+
 
 db_logs = SqliteDatabase(config.LOGS_DB_PATH)
 

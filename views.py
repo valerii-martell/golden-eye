@@ -45,3 +45,4 @@ def edit_xrate(from_currency, to_currency):
 @app.route("/logs/<logs_type>/<fmt>")
 def view_logs(logs_type, fmt):
     return controllers.ViewLogs().call(logs_type, fmt)
+
