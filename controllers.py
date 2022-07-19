@@ -126,7 +126,7 @@ class EditRate(BaseController):
                                    aliases_map=aliases_map)
 
         # POST request is got
-        print(request.form)
+        # print(request.form)
         if "new_rate" not in request.form:
             app.logger.exception("Error: %s" % "new_rate parameter is required")
             raise Exception("new_rate parameter is required")
@@ -139,6 +139,6 @@ class EditRate(BaseController):
                           .where(XRate.from_currency == from_currency,
                                  XRate.to_currency == to_currency).execute())
 
-        print("upd_count", upd_count)
+        # print("upd_count", upd_count)
         return redirect(url_for('view_rates'))
 
