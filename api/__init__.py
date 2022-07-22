@@ -5,7 +5,7 @@ import requests
 
 from config import logging, HTTP_TIMEOUT
 
-from models import XRate, peewee_datetime, ApiLog, ErrorLog
+from models import XRate, peewee_datetime, ApiLog, ErrorLog, LatestUpdate
 
 
 def update_rate(from_currency, to_currency):
@@ -25,7 +25,8 @@ class _Api:
         self.log.info("Started update for: %s" % xrate)
         self.log.debug("Rate before: %s", xrate)
         xrate.rate = self._update_rate(xrate)
-        xrate.updated = peewee_datetime.datetime.now()
+        time = peewee_datetime.datetime.now()
+        xrate.updated, LatestUpdate.get(id=1).datetime = time, time
         xrate.save()
 
         self.log.debug("Rate after: %s", xrate)
@@ -35,7 +36,7 @@ class _Api:
         raise NotImplementedError("_update_rate")
 
     def _send_request(self, url, method, data=None, headers=None):
-        log = ApiLog(request_url=url, request_data=data, request_method=method,
+        log = ApiLog(request_url=str(url).split('?')[0], request_data=data, request_method=method,
                      request_headers=headers)
         try:
             response = self._send(method=method, url=url, headers=headers, data=data)
@@ -44,7 +45,7 @@ class _Api:
         except Exception as ex:
             self.log.exception("Error during request sending")
             log.error = str(ex)
-            ErrorLog.create(request_data=data, request_url=url, request_method=method,
+            ErrorLog.create(request_data=data, request_url=str(url).split('?')[0], request_method=method,
                             error=str(ex), traceback=traceback.format_exc(chain=False))
             raise
         finally:

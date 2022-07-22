@@ -60,6 +60,16 @@ class XRate(_Model):
         return "XRate(%s=>%s): %s" % (self.from_currency, self.to_currency, self.rate)
 
 
+class LatestUpdate(_LogModel):
+    class Meta:
+        db_table = "latest_update"
+
+    datetime = DateTimeField(default=peewee_datetime.datetime.now, index=True)
+
+    def __str__(self):
+        return str(self.datetime)
+
+
 class ApiLog(_LogModel):
     class Meta:
         db_table = "api_logs"
@@ -95,13 +105,28 @@ def start_db():
         XRate.create(from_currency=1000, to_currency=980, rate=1, module="coinmarketcap_api")
         XRate.create(from_currency=1000, to_currency=643, rate=1, module="blockchaininfo_api")
 
-        for m in ApiLog, ErrorLog:
-            m.drop_table()
-            m.create_table()
+        print("Main table created!")
 
-        print("db created!")
+    if not ApiLog.table_exists():
+        ApiLog.drop_table()
+        ApiLog.create_table()
+        print("API logs table created!")
+
+    if not ErrorLog.table_exists():
+        ErrorLog.drop_table()
+        ErrorLog.create_table()
+        print("Errors table created!")
+
+    if not LatestUpdate.table_exists():
+        LatestUpdate.drop_table()
+        LatestUpdate.create_table()
+        LatestUpdate.create(datetime=peewee_datetime.datetime.now())
+        print("Latest update table created!")
 
 
 def init_db():
     XRate.drop_table()
+    LatestUpdate.drop_table()
+    ApiLog.drop_table()
+    ErrorLog.drop_table()
     start_db()
