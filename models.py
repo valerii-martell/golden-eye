@@ -4,8 +4,6 @@ from peewee import SqliteDatabase, Model, IntegerField, DoubleField, DateTimeFie
     CharField, TextField, PostgresqlDatabase
 
 
-db_logs = SqliteDatabase(config.LOGS_DB_PATH)
-
 if DB_CONN['host'] and DB_CONN['user'] and DB_CONN['password'] \
     and DB_CONN['port'] and DB_CONN['database'] and DB_CONN['sslmode']:
     db = PostgresqlDatabase(host=DB_CONN['host'],
@@ -16,6 +14,17 @@ if DB_CONN['host'] and DB_CONN['user'] and DB_CONN['password'] \
                             sslmode=DB_CONN['sslmode'])
 else:
     db = SqliteDatabase(config.DB_PATH)
+
+if DB_CONN['host'] and DB_CONN['user'] and DB_CONN['password'] \
+    and DB_CONN['port'] and DB_CONN['database_logs'] and DB_CONN['sslmode']:
+    db_logs = PostgresqlDatabase(host=DB_CONN['host'],
+                            user=DB_CONN['user'],
+                            password=DB_CONN['password'],
+                            port=DB_CONN['port'],
+                            database=DB_CONN['database_logs'],
+                            sslmode=DB_CONN['sslmode'])
+else:
+    db_logs = SqliteDatabase(config.LOGS_DB_PATH)
 
 # if os.environ.get("DATABASE_URL"):
 #     url = urllib.parse.urlparse(os.environ.get("DATABASE_URL"))

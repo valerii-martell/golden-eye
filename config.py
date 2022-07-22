@@ -7,6 +7,7 @@ KEYS = {
 
 DB_CONN = {
     'database': os.environ.get('POSTGRESQL_DATABASE'),
+    'database_logs': os.environ.get('POSTGRESQL_LOGS_DATABASE'),
     'host': os.environ.get('POSTGRESQL_HOST'),
     'user': os.environ.get('POSTGRESQL_USER'),
     'password': os.environ.get('POSTGRESQL_PASSWORD'),
