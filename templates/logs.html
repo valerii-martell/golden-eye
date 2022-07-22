@@ -19,7 +19,7 @@
                    role="button">Next page »</a>
                 <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
                    href="{{ url_for('view_logs', logs_type="errors" if logs_type=="api" else "api", fmt="html") }}"
-                   role="button">Go to {{ "API" if logs_type == "errors" else logs_type[:-1] }} logs
+                   role="button">Go to {{ "API" if logs_type == "errors" else "error" }} logs
                     »</a>
                 <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
                    href="{{ url_for('view_logs', logs_type=logs_type, fmt="json", page=page_number) }}"
