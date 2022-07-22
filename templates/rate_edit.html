@@ -1,20 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rate edit</title>
-</head>
-<body>
-    <p>Rate: {{aliases_map[from_currency]}} => {{aliases_map[to_currency]}}</p>
-    <form action="{{url_for('edit_xrate', from_currency=from_currency, to_currency=to_currency)}}" 
-          method="POST">
+{% extends "index.html" %}
 
-      <input type="text" name="new_rate">
-      
-      <input type="submit" value="Save">
+{% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+            {% if from_currency not in aliases_map.keys() %}
+                <h2 class="display-4">Unknown code of base currency!</h2>
+            {% elif to_currency not in aliases_map.keys() %}
+                <h2 class="display-4">Unknown code of target currency!</h2>
+            {% else %}
+                <h2 class="display-4">Update rate</h2>
+            {% endif %}
+        </div>
+    </div>
 
-    </form>
-</body>
-</html>
+    <div class="container">
+        <!-- Example row of columns -->
+        <form action="{{ url_for('edit_xrate', from_currency=from_currency, to_currency=to_currency) }}"
+              method="POST">
+            <div class="form-group" style="width: 30vw; min-width: 30vw;">
+                <p>
+                    <label for="rate">{{ aliases_map[from_currency][1] }}
+                        => {{ aliases_map[to_currency][1] }}</label>
+                    <input type="number" step="any" min="0" class="form-control" id="rate"
+                           aria-describedby="emailHelp" required="" autofocus=""
+                           placeholder="{{ current_rate }}" name="new_rate">
+                    <small id="emailHelp" class="form-text text-muted">A rational number greater than or equal
+                        to 0</small>
+                </p>
+
+                <p>
+                    <button type="submit" class="btn btn-success btn-lg">Submit »</button>
+                </p>
+            </div>
+        </form>
+    </div>
+
+
+    <hr>
+{% endblock %}
 
 
 

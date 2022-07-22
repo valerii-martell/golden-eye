@@ -3,7 +3,7 @@ import controllers
 from app import app
 from config import IP_LIST
 from functools import wraps
-from flask import request, abort
+from flask import request, abort, render_template
 
 
 def check_ip(func):
@@ -18,8 +18,8 @@ def check_ip(func):
 
 
 @app.route("/")
-def hello():
-    return "Hello everybody!"
+def main():
+    return controllers.ViewMainPage().call()
 
 
 @app.route("/xrates")
@@ -28,7 +28,8 @@ def view_rates():
 
 
 @app.route("/api/xrates/<fmt>")
-def api_rates(fmt):
+@app.route("/api")
+def api_rates(fmt=None):
     return controllers.GetApiRates().call(fmt)
 
 

@@ -1,20 +1,93 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Api Logs</title>
-</head>
-<body>
-    {% if not logs %}
-    <h1>No logs!</h1>
-    {% endif %}
-    
-    <ul>
-        {% for log in logs %}
-        <li>{{log.json()}}</li>
+{% extends "index.html" %}
+
+{% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+            {% if not logs_len and page_number > 1 %}
+                <h2 class="display-4">No {{ logs_type[:-1] if logs_type == "errors" else logs_type.upper() }} logs on
+                    page number: {{ page_number }}</h2>
+            {% elif not logs_len %}
+                <h2 class="display-4">No {{ logs_type[:-1] if logs_type == "errors" else logs_type.upper() }} logs!</h2>
+            {% else %}
+                <h2 class="display-4">{{ logs_type[:-1].capitalize() if logs_type == "errors" else logs_type.upper() }}
+                    logs: page {{ page_number }}</h2>
+            {% endif %}
+            <p style="margin-top: 4vh">
+                <a id="next" class="btn btn-success btn-lg"
+                   href="{{ url_for('view_logs', logs_type=logs_type, fmt="html", page=page_number + 1) }}"
+                   role="button">Next page »</a>
+                <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
+                   href="{{ url_for('view_logs', logs_type="errors" if logs_type=="api" else "api", fmt="html") }}"
+                   role="button">Go to {{ "API" if logs_type == "errors" else logs_type[:-1] }} logs
+                    »</a>
+                <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
+                   href="{{ url_for('view_logs', logs_type=logs_type, fmt="json", page=page_number) }}"
+                   role="button">Get in JSON »</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if page_number <= 1 and not logs_len %}
+            <h1>We haven't got any {{ logs_type[:-1] if logs_type == "errors" else logs_type.upper() }} logs yet</h1>
+        {% elif page_number > 1 and not logs_len %}
+            <h1>There aren't any {{ logs_type[:-1] if logs_type == "errors" else logs_type.upper() }} logs on this
+                page</h1>
+        {% endif %}
+
+        <table class="table table-striped">
+            {% for log in range(logs_len) %}
+                <tr align="left">
+                    <td>
+                        <div class="json" style="max-width: 80vw"></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+    <hr>
+
+    <script src="{{ url_for('static', filename='scripts/json-viewer.js') }}"></script>
+    <script>
+
+
+        let jsons = []
+        {%  for json in jsons.json %}
+            jsons.push({{ json|tojson }})
         {% endfor %}
-    </ul>
-</body>
-</html>
+
+        for (json of jsons) {
+            try {
+                json["response_text"] = JSON.parse(json["response_text"]);
+            } catch {
+                continue;
+            }
+        }
+
+
+        window.addEventListener("load", () => {
+            const href = window.location.href;
+            const nextTitle = "{{ title }}";
+            const nextState = {additionalInformation: 'Updated the URL with JS'};
+            if (href.indexOf("?page=") == -1) {
+                window.history.pushState(nextState, nextTitle, href + "?page=1");
+            }
+            if (href.includes("?page=0")) {
+                window.history.pushState(nextState, nextTitle, href.substring(0, href.indexOf("?")) + "?page=1");
+            }
+            let i = 0;
+            for (json_element of document.getElementsByClassName("json")) {
+                let jsonViewer = new JSONViewer();
+                json_element.appendChild(jsonViewer.getContainer());
+                jsonViewer.showJSON(jsons[i++]);
+            }
+        });
+    </script>
+{% endblock %}
+
 
 
 

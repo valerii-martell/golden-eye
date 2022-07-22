@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class=" ukmnbysi idc0_341">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Movies RESTful API title page">
+    <meta name="author" content="Valerii Martell">
+    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>{{ title }}</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
+    <link href="{{ url_for('static', filename='styles/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles/jumbotron.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles/json-viewer.css') }}" rel="stylesheet" type="text/css">
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1068.0" data-gr-ext-installed="">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Golden Eye</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('view_rates') }}">Rates</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('api_rates') }}">API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('view_logs', logs_type="api", fmt="html") }}">Logs</a>
+            </li>
+        </ul>
+    </div>
+
+</nav>
+
+<main role="main">
+    {% block content %}
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-3">Golden Eye</h1>
+                <p>
+                    A simple web service that continuously collects current currency exchange rates from open banking
+                    and crypto exchange APIs, displays them on website and provides them in JSON and XML
+                    formats through its own API. Manually editing exchange rates and
+                    manually requesting the latest updates is also available. Time since last update: {{ minutes }}
+                    minutes.
+                </p>
+                <p>
+                    Developed using Python, Flask, PostgreSQL.
+                </p>
+                <p><a class="btn btn-success btn-lg" href="{{ url_for('view_rates') }}" role="button">Let's get this
+                    show on the road »</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col">
+                <h2>Exchange rates</h2>
+                <p>See the latest currency and cryptocurrency exchange rates.</p>
+                <p>
+                    All the data is gathered from such sources like the Ukrainian State Bank PrivatBank,
+                    The Central Bank of Russian Federation, Blockchain.info, Cryptonator and Coinmarketcap
+                    and updated automatically every 15 minutes
+                </p>
+                <p><a class="btn btn-primary" href="{{ url_for('view_rates') }}" role="button">Show me »</a></p>
+            </div>
+            <div class="col">
+                <h2>API</h2>
+                <p>You can get a list of the latest currency exchange rates through a high-available API.</p>
+                <p>Moreover, you can specify your requests by mentioning particular currencies and/or a convenient
+                    result format. </p>
+                <p><a class="btn btn-primary" href="/actors" role="button">How can I get »</a></p>
+            </div>
+            <div class="col">
+                <h2>Logging</h2>
+                <p>The entire service is completely covered by logging. Internal logs are only available to
+                    administrators, but API logs and error logs can be viewed.</p>
+                <p>There is nothing to hide from you.</p>
+                <p>This request also can be specified by mentioning a convenient format, so you can see them on website
+                    or get it as a json. Logs service is paginated, 10 per page.</p>
+                <p><a class="btn btn-primary" href="/aggregations" role="button">I'm curious »</a></p>
+            </div>
+        </div>
+        <hr>
+    {% endblock %}
+    </div> <!-- /container -->
+
+</main>
+
+<footer class="container">
+    <p>© Valerii Martell <a href="https://github.com/valerii-martell/golden-eye">GitHub</a></p>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='scripts/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/bootstrap.min.js') }}"></script>
+</body>
+</html>

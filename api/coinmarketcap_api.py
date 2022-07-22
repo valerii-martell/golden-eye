@@ -39,7 +39,7 @@ class Api(_Api):
 
         for token_data in response_data["data"]:
             if token_data["symbol"] == "WBTC":
-                return float(token_data["quote"]["UAH"]["price"])
+                return round(float(token_data["quote"]["UAH"]["price"]), 3)
 
         raise ValueError(f"Invalid coinmarketcap response: WBTC not set")
 

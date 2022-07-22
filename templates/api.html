@@ -1,0 +1,180 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="jumbotron">
+            <div class="container">
+                <h2 class="display-4">Golden Eye API</h2>
+                <p>
+                    You can specify your request using the form below. The results are available both in JSON and XML formats.
+                </p>
+                <p>
+                    Time since last update: {{ minutes }} minutes.
+                </p>
+                <p>
+                    <a class="btn btn-success btn-lg" href="{{ url_for('api_rates', fmt='json') }}" role="button">Show me in JSON »</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('api_rates', fmt='json') }}" style="margin-left: 2vw" role="button">I prefer XML »</a>
+                </p>
+            </div>
+        </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Make your request</h2>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p>
+                            <label for="button_from" style="margin-bottom: 0vh;">From:</label>
+                        <div id="button_from" class="btn-group dropright">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                All
+                            </button>
+                            <div class="dropdown-menu">
+                                {% for xrate in xrates %}
+                                    <a class="dropdown-item">{{ xrate.from_currency }}</a>
+                                {% endfor %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item active">ALL</a>
+                            </div>
+                        </div>
+                        </p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>
+                            <label for="button_to" style="margin-bottom: 0vh;">To:</label>
+                        <div id="button_to" class="btn-group dropright">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                All
+                            </button>
+                            <div class="dropdown-menu">
+                                {% for xrate in xrates %}
+                                    <a class="dropdown-item">{{ xrate.to_currency }}</a>
+                                {% endfor %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item active">ALL</a>
+                            </div>
+                        </div>
+                        </p>
+                    </div>
+                </div>
+                <p>
+                <div class="form-check">
+                    <input class="form-check-input fmt" type="radio" value="json" checked>
+                    <label class="form-check-label" for="fmt0">
+                        JSON
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input fmt" type="radio" value="xml">
+                    <label class="form-check-label" for="fmt1">
+                        XML
+                    </label>
+                </div>
+                </p>
+                <p>
+                    <button class="btn btn-success btn-lg" id="button-submit">GET »</button>
+                </p>
+            </div>
+            <div class="col">
+                <h2>Aliases</h2>
+                <p>If you want to manually edit the request URL, then use these currency codes.</p>
+                <table class="table table-striped">
+                    <thead align="center">
+                    <td><b>Code</b></td>
+                    <td><b>Acronym</b></td>
+                    <td><b>Currency name</b></td>
+                    </thead>
+                    {% for code, (acronym, currency) in aliases_map.items() %}
+                        <tr align="center">
+                            <td>{{ code }}</td>
+                            <td>{{ acronym }}</td>
+                            <td>{{ currency }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <hr>
+    <!-- Example row of columns -->
+    <script>
+        window.addEventListener("load", () => {
+            const droprights = document.getElementsByClassName("dropright");
+            for (let dropright of droprights) {
+                const dropdown_toggle = dropright.getElementsByClassName("dropdown-toggle")[0];
+                const dropdown_items = dropright.getElementsByClassName("dropdown-item");
+
+                for (let dropdown_item of dropdown_items) {
+                    dropdown_item['is_active'] = false;
+                }
+                dropdown_items[dropdown_items.length - 1]['is_active'] = true;
+
+                for (let dropdown_item of dropdown_items) {
+                    dropdown_item.addEventListener("click", () => {
+                        if (!dropdown_item.is_active) {
+                            for (let dropdown_item of dropdown_items) {
+                                dropdown_item.is_active = false;
+                                dropdown_item.classList.remove("active")
+                            }
+
+                            dropdown_item.is_active = true;
+                            dropdown_item.classList.add("active");
+                            dropdown_toggle.innerText = dropdown_item.innerText;
+                        }
+                    });
+                }
+            }
+
+            function set_radios_unchecked() {
+                const radios = document.getElementsByClassName('fmt');
+                for (let radio of radios) {
+                    radio.checked = false;
+                }
+            }
+
+            let fmt = "";
+            const radios = document.getElementsByClassName('fmt');
+            for (let radio of radios) {
+                if (radio.checked) {
+                    fmt = radio.value;
+                }
+                radio.addEventListener("click", () => {
+                    set_radios_unchecked();
+                    radio.checked = true;
+                    fmt = radio.value;
+                });
+            }
+
+            document.getElementById("button-submit").addEventListener("click", () => {
+                const dropdown_toggles = document.getElementsByClassName("dropdown-toggle");
+                let currency_codes = [];
+                for (let i = 0; i < dropdown_toggles.length; i++) {
+                    currency_codes[i] = dropdown_toggles[i].innerText.trim().toLowerCase();
+                }
+
+                let href = document.location.href.replaceAll("#", "") + "/xrates/" + fmt;
+                let params = "";
+                if (currency_codes[0] != "all") {
+                    params += "?from_currency=" + currency_codes[0];
+                }
+                if (currency_codes[1] != "all") {
+                    if (params != "") {
+                        params += "&to_currency=" + currency_codes[1];
+                    } else {
+                        params += "?to_currency=" + currency_codes[1];
+                    }
+                }
+                if (params != "") {
+                    href += params;
+                }
+
+                window.location.href = href;
+            });
+
+        });
+    </script>
+{% endblock %}

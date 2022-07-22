@@ -1,44 +1,59 @@
+{% extends "index.html" %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rates</title>
-</head>
-<body>
-    {% if not xrates %}
-    <h1>No rates!</h1>
-    {% endif %}
-    
-    <table border="1">
-        <thead align="center">
-            <td>From</td>
-            <td>To</td>
-            <td>Rate</td>
-            <td>Source</td>
-            <td>Updated</td>
-            <td><a href="{{url_for('update_xrates')}}">Update All</a></td>
-            <td>Edit rate</td>
-        </thead>
-        {% for rate in xrates %}
-        <tr align="center">
-            <td>{{aliases_map[rate.from_currency]}}</td>
-            <td>{{aliases_map[rate.to_currency]}}</td>
-            <td>{{rate.rate}}</td>
-            <td>{{rate.module}}</td>
-            <td>{{rate.updated}}</td>
-            <td>
-                <a href="{{url_for('update_xrates', from_currency=rate.from_currency, to_currency=rate.to_currency)}}">Update</a>
-            </td>
-            <td>
-                <a href="{{url_for('edit_xrate', from_currency=rate.from_currency, to_currency=rate.to_currency)}}">Edit</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+{% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+            {% if not xrates %}
+                <h2 class="display-4">No rates!</h2>
+            {% else %}
+                <h2 class="display-4">Exchange rates</h2>
+                <p>All the data is gathered from such sources like the Ukrainian State Bank PrivatBank,
+                    The Central Bank of Russian Federation, Blockchain.info, Cryptonator and Coinmarketcap
+                    and updated automatically every 10 minutes
+                </p>
+                <p>
+                    Time since last update: {{ minutes }} minutes.
+                </p>
+                <p>
+                    <a class="btn btn-success btn-lg" href="{{ url_for('api_rates') }}" role="button">Try API »</a>
+                </p>
+
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Example row of columns -->
+        <table class="table table-striped">
+            <thead align="center">
+            <td><b>From</b></td>
+            <td><b>To</b></td>
+            <td><b>Rate</b></td>
+            <td><b>Source</b></td>
+            <td><b>Updated</b></td>
+            <td><b><a href="{{ url_for('update_xrates') }}">Update All</a></b></td>
+            <td><b>Edit rate</b></td>
+            </thead>
+            {% for rate in xrates %}
+                <tr align="center">
+                    <td>{{ aliases_map[rate.from_currency][0] }}</td>
+                    <td>{{ aliases_map[rate.to_currency][0] }}</td>
+                    <td>{{ rate.rate }}</td>
+                    <td align="left"><a target="_blank" rel="noopener noreferrer"
+                                        href="{{ sources_map[rate.module] }}">{{ sources_map[rate.module] }}</a></td>
+                    <td align="left">{{ rate.updated }}</td>
+                    <td>
+                        <a href="{{ url_for('update_xrates', from_currency=rate.from_currency, to_currency=rate.to_currency) }}">Update</a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_xrate', from_currency=rate.from_currency, to_currency=rate.to_currency) }}">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
 
-
-
-
+    <hr>
+{% endblock %}
