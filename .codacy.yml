@@ -6,7 +6,7 @@ exclude_paths:
   - "static/**"
   - "samples/**"
   - "templates/**"
-  - "readme.md"
+  - "README.md"
   - "run.sh"
   - "config.py"
   - "Dockerfile"
