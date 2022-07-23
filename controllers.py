@@ -52,12 +52,16 @@ class ViewAllRates(BaseController):
 
 class GetApiRates(BaseController):
     def _call(self, fmt):
-        xrates = XRate.select()
-
         if not fmt:
-            return render_template("api.html", xrates=xrates, title="API", aliases_map=aliases_map,
+            from_currencies = XRate.select(XRate.from_currency).distinct()
+            to_currencies = XRate.select(XRate.to_currency).distinct()
+
+            return render_template("api.html", from_currencies=from_currencies, to_currencies=to_currencies,
+                                   title="API", aliases_map=aliases_map,
                                    minutes=self.minutes_past_last_update())
         else:
+            xrates = XRate.select()
+
             app.logger.info(f"Asked for API in format {fmt}")
             xrates = self._filter(xrates)
 

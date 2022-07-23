@@ -44,7 +44,7 @@
                                 All
                             </button>
                             <div class="dropdown-menu">
-                                {% for xrate in xrates %}
+                                {% for xrate in from_currencies %}
                                     <a class="dropdown-item">{{ xrate.from_currency }}</a>
                                 {% endfor %}
                                 <div class="dropdown-divider"></div>
@@ -62,7 +62,7 @@
                                 All
                             </button>
                             <div class="dropdown-menu">
-                                {% for xrate in xrates %}
+                                {% for xrate in to_currencies %}
                                     <a class="dropdown-item">{{ xrate.to_currency }}</a>
                                 {% endfor %}
                                 <div class="dropdown-divider"></div>
