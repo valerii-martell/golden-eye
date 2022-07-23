@@ -2,7 +2,7 @@ name: Deploy to Azure
 
 on:
   workflow_run:
-    workflows: [ "Pytest" ]
+    workflows: [ "CodeQL" ]
     types:
       - completed
   workflow_dispatch:
@@ -21,13 +21,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 'Build Docker image'
-        run: |
-          # docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:${{ github.sha }}
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
+      - name: '🔍 Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: '🚀️ Deploy to Azure Container Instances'
-        run: |
-          docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-          # docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:${{ github.sha }}
+      - name: '📦 Build and Push Docker image'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
+
+      - name: '🚀 Deploy to Azure'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'golden-eye'
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
