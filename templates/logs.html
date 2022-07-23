@@ -13,17 +13,34 @@
                 <h2 class="display-4">{{ logs_type[:-1].capitalize() if logs_type == "errors" else logs_type.upper() }}
                     logs: page {{ page_number }}</h2>
             {% endif %}
+            <p>This request also can be specified by mentioning a convenient format, so you can see them on website
+                or get it as a JSON. Logs service is also paginated, 10 per page.</p>
             <p style="margin-top: 4vh">
-                <a id="next" class="btn btn-success btn-lg"
-                   href="{{ url_for('view_logs', logs_type=logs_type, fmt="html", page=page_number + 1) }}"
-                   role="button">Next page »</a>
-                <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
-                   href="{{ url_for('view_logs', logs_type="errors" if logs_type=="api" else "api", fmt="html") }}"
-                   role="button">Go to {{ "API" if logs_type == "errors" else "error" }} logs
-                    »</a>
-                <a class="btn btn-lg btn-primary" style="margin-left: 2vw"
-                   href="{{ url_for('view_logs', logs_type=logs_type, fmt="json", page=page_number) }}"
-                   role="button">Get in JSON »</a>
+            <div class="row">
+                <div class="col-lg-2">
+                    <p>
+                        <a id="next" class="btn btn-success btn-lg"
+                           href="{{ url_for('view_logs', logs_type=logs_type, fmt="html", page=page_number + 1) }}"
+                           role="button">Next page »</a>
+                    </p>
+                </div>
+                <div class="col-lg-2">
+                    <p>
+                        <a class="btn btn-lg btn-primary"
+                           href="{{ url_for('view_logs', logs_type="errors" if logs_type=="api" else "api", fmt="html") }}"
+                           role="button">{{ "API" if logs_type == "errors" else "Error" }} logs »</a>
+                    </p>
+                </div>
+                <div class="col-lg-2">
+                    <p>
+                        <a class="btn btn-lg btn-primary"
+                           href="{{ url_for('view_logs', logs_type=logs_type, fmt="json", page=page_number) }}"
+                           role="button">Get in JSON »</a>
+                    </p>
+                </div>
+            </div>
+
+
             </p>
         </div>
     </div>

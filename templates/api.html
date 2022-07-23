@@ -2,20 +2,33 @@
 
 {% block content %}
     <div class="jumbotron">
-            <div class="container">
-                <h2 class="display-4">Golden Eye API</h2>
-                <p>
-                    You can specify your request using the form below. The results are available both in JSON and XML formats.
-                </p>
-                <p>
-                    Time since last update: {{ minutes }} minutes.
-                </p>
-                <p>
-                    <a class="btn btn-success btn-lg" href="{{ url_for('api_rates', fmt='json') }}" role="button">Show me in JSON »</a>
-                    <a class="btn btn-primary btn-lg" href="{{ url_for('api_rates', fmt='json') }}" style="margin-left: 2vw" role="button">I prefer XML »</a>
-                </p>
+        <div class="container">
+            <h2 class="display-4">Golden Eye API</h2>
+            <p>
+                You can specify your request using the form below. The results are available both in JSON and XML
+                formats.
+            </p>
+            <p>
+                Time since last update: {{ minutes }} minutes.
+            </p>
+            <p>
+            <div class="row">
+                <div class="col-lg-3">
+                    <p>
+                        <a class="btn btn-success btn-lg" href="{{ url_for('api_rates', fmt='json') }}" role="button">
+                            Show me in JSON »</a>
+                    </p>
+                </div>
+                <div class="col-lg-3">
+                    <p>
+                        <a class="btn btn-primary btn-lg" href="{{ url_for('api_rates', fmt='json') }}" role="button">
+                            I prefer XML »</a>
+                    </p>
+                </div>
             </div>
+            </p>
         </div>
+    </div>
 
     <div class="container">
         <div class="row">
