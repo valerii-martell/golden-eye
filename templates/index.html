@@ -48,8 +48,8 @@
                 <h1 class="display-3">Golden Eye</h1>
                 <p>
                     A simple web service that continuously collects current currency exchange rates from open banking
-                    and crypto exchange APIs, displays them on website and provides them in JSON and XML
-                    formats through its own API. Manually editing exchange rates and
+                    and crypto exchange APIs, displays them on the website and provides them in JSON and XML
+                    formats through its own RESTful API. Manually editing exchange rates and
                     manually requesting the latest updates is also available. Time since last update: {{ minutes }}
                     minutes.
                 </p>
@@ -77,7 +77,7 @@
             </div>
             <div class="col">
                 <h2>API</h2>
-                <p>You can get a list of the latest currency exchange rates through a high-available API.</p>
+                <p>You can get a list of the latest currency exchange rates through a high-available RESTful API.</p>
                 <p>Moreover, you can specify your requests by mentioning particular currencies and/or a convenient
                     result format. </p>
                 <p><a class="btn btn-primary" href="/actors" role="button">How can I get »</a></p>
@@ -85,7 +85,7 @@
             <div class="col">
                 <h2>Logging</h2>
                 <p>The entire service is completely covered by logging. Internal logs are only available to
-                    administrators, but API logs and error logs can be viewed.</p>
+                    administrators, but external APIs logs can be viewed.</p>
                 <p>There is nothing to hide from you.</p>
                 <p><a class="btn btn-primary" href="/aggregations" role="button">I'm curious »</a></p>
             </div>
