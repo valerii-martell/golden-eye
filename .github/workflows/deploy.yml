@@ -1,0 +1,33 @@
+name: Deploy to Azure
+
+on:
+  workflow_run:
+    workflows: [ "Pytest" ]
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: 'Build Docker image'
+        run: |
+          # docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
+
+      - name: '🚀️ Deploy to Azure Container Instances'
+        run: |
+          docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+          # docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/golden-eye:latest
