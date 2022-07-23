@@ -28,9 +28,9 @@ class Api(_Api):
 
     def _find_rate(self, response_data):
         if "RUB" not in response_data:
-            raise ValueError(f"Invalid BlockchainInfo response: RUB not set")
+            raise ValueError("Invalid BlockchainInfo response: RUB not set")
 
         if "sell" not in response_data["RUB"]:
-            raise ValueError(f"Invalid BlockchainInfo response: RUB.sell not set")
+            raise ValueError("Invalid BlockchainInfo response: RUB.sell not set")
 
         return float(response_data["RUB"]["sell"])

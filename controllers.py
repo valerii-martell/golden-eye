@@ -38,7 +38,6 @@ class BaseController:
         return round((datetime.now() - latest_update).total_seconds() / 60, 2)
 
 
-
 class ViewMainPage(BaseController):
     def _call(self):
         return render_template("index.html", title="Golden Eye", minutes=self.minutes_past_last_update())
@@ -73,13 +72,9 @@ class GetApiRates(BaseController):
 
         if "from_currency" in args:
             xrates = xrates.where(XRate.from_currency == args["from_currency"])
-        else:
-            print("none f")
 
         if "to_currency" in args:
             xrates = xrates.where(XRate.to_currency == args.get("to_currency"))
-        else:
-            print("none t")
 
         return xrates
 
@@ -145,7 +140,6 @@ class ViewLogs(BaseController):
         if fmt == "json":
             return jsonify([log.json() for log in logs])
         elif fmt == 'html':
-            jso = jsonify([log.json() for log in logs])
             return render_template("logs.html", jsons=jsonify([log.json() for log in logs]), logs_len=len(logs),
                                    title=title, page_number=page, logs_type=logs_type)
         else:

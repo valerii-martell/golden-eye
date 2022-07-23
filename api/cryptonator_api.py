@@ -22,7 +22,7 @@ class Api(_Api):
         url_end = f"{aliases_map[from_currency]}-{aliases_map[to_currency]}"
         url = f"https://api.cryptonator.com/api/ticker/{url_end}"
         headers = {
-            #'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            # 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
             #              'Chrome/51.0.2704.103 Safari/537.36',
             'pragma': 'no-cache',
             'dnt': '1',
@@ -45,9 +45,9 @@ class Api(_Api):
 
     def _find_rate(self, response_data):
         if "ticker" not in response_data:
-            raise ValueError(f"Invalid cryptonator response: ticker not set")
+            raise ValueError("Invalid cryptonator response: ticker not set")
 
         if "price" not in response_data["ticker"]:
-            raise ValueError(f"Invalid cryptonator response: ticker.price not set")
+            raise ValueError("Invalid cryptonator response: ticker.price not set")
 
         return float(response_data["ticker"]["price"])

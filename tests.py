@@ -26,8 +26,8 @@ def get_privat_response(*args, **kwds):
 
 
 class Test(unittest.TestCase):
-    def setUp(self):
-        models.init_db()
+    # def setUp(self):
+    #    models.init_db()
 
     @unittest.skip("skip")
     def test_privat_usd(self):

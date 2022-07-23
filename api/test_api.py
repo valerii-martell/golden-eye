@@ -8,4 +8,3 @@ class Api(_Api):
     def _update_rate(self, xrate):
         rate = 1.01
         return rate
-
