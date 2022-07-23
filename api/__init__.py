@@ -26,8 +26,12 @@ class _Api:
         self.log.debug("Rate before: %s", xrate)
         xrate.rate = self._update_rate(xrate)
         time = peewee_datetime.datetime.now()
-        xrate.updated, LatestUpdate.get(id=1).datetime = time, time
+        xrate.updated = time
         xrate.save()
+
+        latest_update = LatestUpdate.get(id=1)
+        latest_update.datetime = time
+        latest_update.save()
 
         self.log.debug("Rate after: %s", xrate)
         self.log.info("Finished update for: %s" % xrate)
