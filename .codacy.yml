@@ -1,0 +1,13 @@
+---
+engines:
+  duplication:
+    enabled: true
+exclude_paths:
+  - "static/**"
+  - "samples/**"
+  - "templates/**"
+  - "readme.md"
+  - "run.sh"
+  - "config.py"
+  - "Dockerfile"
+
