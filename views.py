@@ -1,3 +1,5 @@
+"""This module contains all app's routing."""
+
 import controllers
 
 from app import app
@@ -7,6 +9,7 @@ from flask import request, abort
 
 
 def check_ip(func):
+    """A wrapper for route functions that restrict access to wrapped routes from unknown IPs"""
     @wraps(func)
     def checker(*args, **kwargs):
         if request.remote_addr not in IP_LIST:

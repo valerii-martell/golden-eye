@@ -1,3 +1,5 @@
+"""This module contains all app's config variables."""
+
 import logging
 import os
 

@@ -1,3 +1,5 @@
+"""This module contains all tests."""
+
 import http
 import unittest
 import json
@@ -13,6 +15,13 @@ from app import app
 
 
 def get_privat_response(*args, **kwds):
+    """Mock function to omit real calls to external PrivatBank's API
+
+    Returns:
+        Response: An instance of a mock class that pretends to be an instance of real
+                    Response class and contains some pre-defined values
+
+    """
     print("get_privat_response")
 
     class Response:
@@ -31,6 +40,20 @@ class Test(unittest.TestCase):
 
     @unittest.skip("skip")
     def test_privat_usd(self):
+        """ Procedure:
+            1. Get current USD-UAH rate from the DB
+            2. Update USD-UAH rate using PrivatBank API
+            3. Compare previous and updated values (predict that the new one is greater)
+            4. Get corresponding (the latest) entry from external API calls log
+            ---------
+            Verification:
+            5. Updated rate greater than 25
+            6. Updated rate greater than previous value (TODO: upd this part)
+            7. API log contains something
+            8. API log contains corresponding request URL
+            9. API log the response contains some text
+            10. Response text contains expected JSON data pattern (UAH and USD strings)
+        """
         xrate = models.XRate.get(from_currency=840, to_currency=980)
         updated_before = xrate.updated
 
@@ -39,10 +62,10 @@ class Test(unittest.TestCase):
         xrate = models.XRate.get(from_currency=840, to_currency=980)
         updated_after = xrate.updated
 
+        api_log = models.ApiLog.select().order_by(models.ApiLog.created.desc()).first()
+
         self.assertGreater(xrate.rate, 25)
         self.assertGreater(updated_after, updated_before)
-
-        api_log = models.ApiLog.select().order_by(models.ApiLog.created.desc()).first()
 
         self.assertIsNotNone(api_log)
         self.assertEqual(api_log.request_url, "https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11")
