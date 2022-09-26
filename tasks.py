@@ -15,7 +15,7 @@ dictConfig(config.LOGGING)
 log = logging.getLogger("Tasks")
 
 
-@sched.scheduled_job('interval', minutes=10)
+@sched.scheduled_job('interval', hours=1)
 def update_rates():
     """The function for periodic updating all rates in the application."""
     log.info("Job started")

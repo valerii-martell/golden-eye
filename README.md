@@ -12,13 +12,13 @@ A simple web service that continuously collects current currency exchange rates 
 and crypto exchange APIs, displays them on the website and provides them in JSON and XML
 formats through its own RESTful API. Manually editing exchange rates and
 manually requesting the latest updates is also available. The system automatically collects all required currency
-exchange rates and updates them in the database every 10 minutes.
+exchange rates and updates them in the database every hour.
 
 **Technology stack:**
 
 - Language: Python
 - Framework: Flask
-- Databases: PostgreSQL separated for main data and for external APIs logs
+- Databases: 2 PostgreSQL separated for main data and for external APIs logs
 - ORM: Peewee
 - Jobs scheduler: APScheduler
 - Frontend: Jinja2 and Bootstrap 4
